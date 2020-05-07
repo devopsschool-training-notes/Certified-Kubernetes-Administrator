@@ -1,0 +1,111 @@
+3 Components in K8
+=========================
+Master
+---------------------------------------------
+4 Components
+- API Server(APP) -> POD -> Container -> Image -> Registry -> GCR
+- Etcd(APP) -> POD -> Container -> Image -> Registry  -> GCR
+- Controller Manager(APP) -> POD -> Container -> Image -> Registry -> GCR
+- Schedular(APP) -> POD -> Container  -> Image -> Registry -> GCR
+- Core DNS(APP) -> POD -> Container -> Image -> Registry -> GCR
+- cni driver(APP) -> POD -> Container -> Image -> Registry -> GCR
+ 
+- Kubelet(Agent) 
+- Docker Engine(DeamonD)
+- Kube Proxy(APP)  -> POD -> Container -> Image -> Registry -> GCR
+- Kubeadm
+
+
+Worker
+---------------------------------------------
+3 Comonents
+- Kubelet(Agent) 
+- Kube Proxy(APP)  -> POD -> Container -> Image -> Registry -> GCR
+- Docker Engine(DeamonD)
+- cni driver(APP) -> POD -> Container -> Image -> Registry -> GCR
+- Kubeadm
+
+Workstation
+---------------------------------------------
+- kubectl
+
+=======================================================================================
+How to create k8 clustor?
+-------------------------------------
+- Kubelet(Agent) 
+- Docker Engine(DeamonD)
+- Images of ALL COmponents
+- Download Pre tools for k8s clustors
+- Create all PODs
+- Create all Containers
+- Assign a IP address to All Pods.
+- Setting up certificates and token to each pods/containers.
+- Ports specficaition.
+===========================================
+HARDWAY - https://github.com/kelseyhightower/kubernetes-the-hard-way
+Manual way to setup a k8s(master+worker) Kubeadm
+===================================================
+Dev - ONE VM - ONE K8 CLustor -
+	ONE master + one worker === ONE VM 
+	=== MINIKUBE
+https://github.com/kubernetes/minikube
+
+Ops - Prod ready clustor 
+	=== KOPS
+https://github.com/kubernetes/kops
+	- AWS
+	- GC 
+	- VMWARE
+	- OpenStack 
+
+======================================
+AWS -> EKS
+https://aws.amazon.com/eks/
+
+Azure -> AKS
+https://azure.microsoft.com/en-in/services/kubernetes-service/
+
+GC -> GKE
+https://cloud.google.com/kubernetes-engine
+-------
+40+
+
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
+
+=================================================
+13.233.89.67
+===============================
+- Docker Engine(DeamonD)
+https://www.devopsschool.com/tutorial/docker/install-config/docker-install-commuityedition-centos-rhel.html
+- Kubelet(Agent) 
+- Kubeadm
+- kubectl
+https://www.devopsschool.com/blog/setting-up-kubernetes-clusters-using-kubeadm-manual-way-in-rhel-7-centos7/
+
+
+
+SELINUX and Containers Relations
+-----------------------------------------
+https://www.devopsschool.com/blog/what-is-selinux-and-how-its-selinux-used-in-docker/
+
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 172.31.19.103:6443 --token mhncue.xqg1cin04hfd2z8h \
+    --discovery-token-ca-cert-hash sha256:7d58da956071c6327e4653814404a8770d59b8f0d7495052caefc51d5f915f22
+
+
+
+
+
