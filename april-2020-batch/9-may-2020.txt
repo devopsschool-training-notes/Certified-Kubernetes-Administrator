@@ -1,0 +1,51 @@
+Workstation
+---------------------------------------------
+- kubectl ---> config
+		~/.kube
+		curr_home/.kube
+
+Which has clustor API address
+			permissions
+				token
+=======================================
+Clustor(S)
+		Clustor1 - API Address and cert		http://4.4.4.4:6444
+		Clustor2 - API Address and cert
+		Clustor3 - API Address and cert
+		Clustor4 - API Address and cert
+User(s)	
+		User1 -> Cert			user-cert
+		User2 -> Cert
+		User3 -> Cert
+		User4 -> Cert
+Contexet(S)	
+		Context1 -> Clustor1 + User3 
+		Context2 - Clustor4 + User4 
+		Context3
+		Context4
+Curr-context	
+		Context1  or Context2 or Context3 or Context4
+
+
+Reading - How cert auth and TLS auth works!!!!
+========================================
+
+
+
+
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+13.233.75.140
+
+
+
+kubeadm join 172.31.19.103:6443 --token vpg603.u8jp5u7acsknc4si \
+    --discovery-token-ca-cert-hash sha256:7d58da956071c6327e4653814404a8770d59b8f0d7495052caefc51d5f915f22
+
+
+kubeadm token create –ttl 0
+
+
+
+
+
