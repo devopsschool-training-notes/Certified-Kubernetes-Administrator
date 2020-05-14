@@ -1,0 +1,325 @@
+----------------------------------------------------------
+Master
+
+Worker
+
+Workstation
+
+YAML AKA JSON AKA YOUR DESIRE AKA API Objects
+------------
+AKA API Objects
+=========================
+PODS
+ReplicationController
+Deployment
+Services
+============================
+Namepace
+=============================
+13.127.166.100
+
+Kubernetes view entrie cust as ONE computer
+
+How can we distribute Large k8s cluster into SMaller one dedicated to Each projects...
+			- Divide resoureces (CPU+RAM)
+			- that "SMaller cluster" must have dedicated admin.
+Answer - Namespace
+
+
+=======================
+System ----> NS
+Default ---> NS
+Public ---> NS
+Node ---> NS
+========================
+
+   71  kubectl get nodes
+   72  clear
+   73  kubectl
+   74  kubectl cluster-info
+   75  clear
+   76  kubectl get nodes
+   77  clear
+   78  kubectl get ns
+   79  clear
+   80  ls
+   81  kubectl get ns
+   82  clear
+   83  kubectl
+   84  clear
+   85  kubectl
+   86  kubectl api-resources
+   87  clear
+   88  kubectl api-resources | wc -l
+
+
+
+[ec2-user@ip-172-31-19-103 ~]$ kubectl api-resources
+NAME                              SHORTNAMES   APIGROUP                       NAMESPACED   KIND
+bindings                                                                      true         Binding
+componentstatuses                 cs                                          false        ComponentStatus
+configmaps                        cm                                          true         ConfigMap
+endpoints                         ep                                          true         Endpoints
+events                            ev                                          true         Event
+limitranges                       limits                                      true         LimitRange
+namespaces                        ns                                          false        Namespace
+nodes                             no                                          false        Node
+persistentvolumeclaims            pvc                                         true         PersistentVolumeClaim
+persistentvolumes                 pv                                          false        PersistentVolume
+pods                              po                                          true         Pod
+podtemplates                                                                  true         PodTemplate
+replicationcontrollers            rc                                          true         ReplicationController
+resourcequotas                    quota                                       true         ResourceQuota
+secrets                                                                       true         Secret
+serviceaccounts                   sa                                          true         ServiceAccount
+services                          svc                                         true         Service
+mutatingwebhookconfigurations                  admissionregistration.k8s.io   false        MutatingWebhookConfiguration
+validatingwebhookconfigurations                admissionregistration.k8s.io   false        ValidatingWebhookConfiguration
+customresourcedefinitions         crd,crds     apiextensions.k8s.io           false        CustomResourceDefinition
+apiservices                                    apiregistration.k8s.io         false        APIService
+controllerrevisions                            apps                           true         ControllerRevision
+daemonsets                        ds           apps                           true         DaemonSet
+deployments                       deploy       apps                           true         Deployment
+replicasets                       rs           apps                           true         ReplicaSet
+statefulsets                      sts          apps                           true         StatefulSet
+tokenreviews                                   authentication.k8s.io          false        TokenReview
+localsubjectaccessreviews                      authorization.k8s.io           true         LocalSubjectAccessReview
+selfsubjectaccessreviews                       authorization.k8s.io           false        SelfSubjectAccessReview
+selfsubjectrulesreviews                        authorization.k8s.io           false        SelfSubjectRulesReview
+subjectaccessreviews                           authorization.k8s.io           false        SubjectAccessReview
+horizontalpodautoscalers          hpa          autoscaling                    true         HorizontalPodAutoscaler
+cronjobs                          cj           batch                          true         CronJob
+jobs                                           batch                          true         Job
+certificatesigningrequests        csr          certificates.k8s.io            false        CertificateSigningRequest
+leases                                         coordination.k8s.io            true         Lease
+endpointslices                                 discovery.k8s.io               true         EndpointSlice
+events                            ev           events.k8s.io                  true         Event
+ingresses                         ing          extensions                     true         Ingress
+ingressclasses                                 networking.k8s.io              false        IngressClass
+ingresses                         ing          networking.k8s.io              true         Ingress
+networkpolicies                   netpol       networking.k8s.io              true         NetworkPolicy
+runtimeclasses                                 node.k8s.io                    false        RuntimeClass
+poddisruptionbudgets              pdb          policy                         true         PodDisruptionBudget
+podsecuritypolicies               psp          policy                         false        PodSecurityPolicy
+clusterrolebindings                            rbac.authorization.k8s.io      false        ClusterRoleBinding
+clusterroles                                   rbac.authorization.k8s.io      false        ClusterRole
+rolebindings                                   rbac.authorization.k8s.io      true         RoleBinding
+roles                                          rbac.authorization.k8s.io      true         Role
+priorityclasses                   pc           scheduling.k8s.io              false        PriorityClass
+csidrivers                                     storage.k8s.io                 false        CSIDriver
+csinodes                                       storage.k8s.io                 false        CSINode
+storageclasses                    sc           storage.k8s.io                 false        StorageClass
+volumeattachments                              storage.k8s.io                 false        VolumeAttachment
+
+
+[ec2-user@ip-172-31-19-103 ~]$ kubectl api-versions
+admissionregistration.k8s.io/v1
+admissionregistration.k8s.io/v1beta1
+apiextensions.k8s.io/v1
+apiextensions.k8s.io/v1beta1
+apiregistration.k8s.io/v1
+apiregistration.k8s.io/v1beta1
+apps/v1
+authentication.k8s.io/v1
+authentication.k8s.io/v1beta1
+authorization.k8s.io/v1
+authorization.k8s.io/v1beta1
+autoscaling/v1
+autoscaling/v2beta1
+autoscaling/v2beta2
+batch/v1
+batch/v1beta1
+certificates.k8s.io/v1beta1
+coordination.k8s.io/v1
+coordination.k8s.io/v1beta1
+discovery.k8s.io/v1beta1
+events.k8s.io/v1beta1
+extensions/v1beta1
+networking.k8s.io/v1
+networking.k8s.io/v1beta1
+node.k8s.io/v1beta1
+policy/v1beta1
+rbac.authorization.k8s.io/v1
+rbac.authorization.k8s.io/v1beta1
+scheduling.k8s.io/v1
+scheduling.k8s.io/v1beta1
+storage.k8s.io/v1
+storage.k8s.io/v1beta1
+v1
+
+===================================================================================
+
+Microservcies rule (REST API)
+				- CRUD
+===============================================
+			Create 
+				create
+					CMD
+					YAML
+			READ		
+				get
+			UPDate 
+				edit
+				apply
+			Delete 
+				delete
+----namespace crud--------------
+kubectl create ns dev
+kubectl get ns dev 
+kubectl get ns ns 
+kubectl edit ns dev
+kubectl delete ns dev
+----------BONUS---------------------
+kubectl describe ns dev 
+
+
+ 113  kubectl
+  114  kubectl get -h
+  115  kubectl get ns -h
+  122   kubectl create ns -h
+  123  clear
+  124   kubectl create -h
+
+====================================================
+COMPUTE -- STORAGE - NETOWRKING - ADSSER - Security - 
+
+
+			Create 
+				create
+					CMD
+					YAML
+			READ		
+				get
+			UPDate 
+				edit
+				apply
+			Delete 
+				delete
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-pod
+  labels: 
+    app: webserver
+spec:
+  containers:
+  - name: hello-ctr
+    image: nginx
+    ports:
+    - containerPort: 80
+
+
+  136  ls
+  137  vi pod.yaml
+  138  kubectl create -f pod.yaml
+  139  kubectl get pods
+  140  clear
+  141  kubectl create -f pod.yaml
+  142  kubectl create -f pod.yaml -n=dev
+  143  kubectl get pods -n=dev
+  144  kubectl get pods --all-namespaces
+  145  clear
+  146  ls
+  147  kubectl get pods
+  148  kubectl describe pod hello-pod
+  149  clear
+  150  kubectl edit pod hello-pod
+  151  kubectl get pods
+  152  kubectl get pods --show-labesl
+  153  kubectl get pods --show-labels
+  154  clear
+  155  ls
+  156  vi pod.yaml
+  157  kubectl apply -f pod.yaml
+  158  kubectl get pods --show-labels
+  159  kubectl delete -f pod.yaml
+  160  kubectl delete pod hello-pod -n=dev
+  161  history
+ 161  history
+  162  clear
+  163  kubectl create -f pod.yaml
+  164  clear
+  165  kubectl get pod
+  166  kubectl get pod -o wide
+  167  curl http://10.44.0.1
+  168  clear
+  169  ls
+  170  kubectl
+  171  clear
+  172  hhistory
+
+
+
+ logs          Print the logs for a container in a pod
+  attach        Attach to a running container
+  exec          Execute a command in a container
+  port-forward  Forward one or more local ports to a pod
+  proxy         Run a proxy to the Kubernetes API server
+  cp            Copy files and directories to and from containers.
+
+kubectl cp devopsschool.txt hello-pod:/tmp/
+
+
+ 180  curl http://10.44.0.1
+  181  kubectl logs hello-pod
+  182  clear
+  183  kubectl logs hello-pod
+  184  watch kubectl logs hello-pod
+  185  clear
+  186  s
+  187  clear
+  188  ls
+  189  clear
+  190  kubectl exec -it hello-pod /bin/bash
+  191  clear
+  192  l
+  193  ls
+  194  touch devopsschool.txt
+  195  clear
+  196  ls
+  197  kubectl cp -h
+  198  clear
+  199  ls
+  200  kubectl get pods
+  201  kubectl cp devopsschool.txt hello-pod:/tmp/
+  202  history
+ 200  kubectl get pods
+  201  kubectl cp devopsschool.txt hello-pod:/tmp/
+  202  history
+  203  clear
+  204  kubectl exec -it hello-pod ls /tmp/
+  205  kubectl exec -h
+  206  clear
+  207  history
+
+Assignment
+================
+livenessProbe
+https://www.devopsschool.com/blog/how-to-check-containers-health-inside-a-kubernetes-pod-using-livenessprobe/
+readinessProbe
+https://www.devopsschool.com/blog/how-to-check-containers-readiness-inside-a-pod-using-readinessprobe/
+======================================================================================
+
+How to know which are the fiels of API resources objects?
+=========================================
+
+212  kubectl explain pod
+  213  kubectl explain pod.spec
+kubectl explain pod.spec.containers
+https://www.devopsschool.com/tutorial/kubernetes/
+https://www.devopsschool.com/blog/?s=kubernetes
+
+
+
+
+
+
+
+
+
+
+
+
+
