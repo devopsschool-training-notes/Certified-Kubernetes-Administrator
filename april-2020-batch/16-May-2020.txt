@@ -1,0 +1,307 @@
+15.206.74.198
+=====================
+ReplicationController
+Deployment
+====================
+What is ReplicationController
+
+Replication - 1 POD to MANY
+Controller - Control a desire with Actual
+		4 Pods === 4 Pods
+
+Create - Read  - Edit - Delete
+===================================
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: hello-rc
+spec:
+  replicas: 5  
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+      - name: hello-ctr
+        image: nginx
+        ports:
+        - containerPort: 80
+
+ 257  ls
+  258  vi rc.yaml
+  259  kubectl apply -f rc.yaml
+  260  kubectl get pods
+  261  clear
+  262  kubectl get pods
+  263  clear
+  264  ls
+  265  kubectl get pods
+  266  kubectl get rc
+  267  kubectl delete pod hello-rc-j8vj4
+  268  kubectl get rc
+  269  kubectl get pods
+  270  clear
+  271  ls
+  272  kubectl get rc
+  273  kubectl describe rc hello-rc
+  274  clear
+  275  kubectl get rc
+  276  kubectl delete rc hello-rc
+  277  kubectl get pods
+
+====================================================
+Deployment
+====================================================
+Replication
+Controller
+Versioning
+Rollout 
+Rollback
+===============================
+C R U D
+
+create        	Create a resource from a file or from stdin.
+run		Run a particular image on the cluster
+
+
+kubectl create deployment my-dep --image=scmgalaxy/nginx-devopsschoolv1
+kubectl run deployment my-dep --image=scmgalaxy/nginx-devopsschoolv1
+=============
+Docker RUN = PULL -> Create --> Start --> Become
+kubectl RUN = PULL -> Create --> Start --> Become
+
+  278  clear
+  279  kubectl create -h
+  280  clear
+  281  kubectl create deployment -h
+  282  history
+  283  clear
+  284  kubectl create deployment my-dep --image=scmgalaxy/nginx-devopsschoolv1
+  285  kubectl get deploy
+  286  kubectl get pod
+  287  kubectl get deploy -n=dev
+  288  kubectl config -h
+  289  clear
+  290  ls
+  291  kubectl get deploy
+  292  kubectl get deploy -h
+  293  clear
+  294  kubectl get deploy -o wide
+  295  kubectl get pod -o wide
+  296  kubectl get pod -o wide --all-namespaces
+  297  clear
+  298  ls
+  299  kubectl get pod -h
+  300  clear
+  301  ls
+  302  kubectl
+  303  clear
+  304  kubectl run deployment my-dep --image=scmgalaxy/nginx-devopsschoolv1
+  305  kubectl get deploy
+  306  history
+  307  clear
+  308  kubectl get deploy
+  309  kubectl get pods
+  310  clear
+  311  kubectl run -h
+  312  clear
+  313  kubectl run nginx --image=nginx
+  314  kubectl get pod
+  315  clear
+  316  ls
+  317  clear
+  318  ls
+  319  kubectl get deploy
+  320  kubectl edit deploy my-dep
+  321  kubectl get deploy\
+  322  kubectl get deploy
+  323  clear
+  324  kubectl get deploy
+  325  kubectl get pod -o wide
+  326  clear
+  327  curl http://10.44.0.8
+  328  clear
+  329  kubectl get pod
+  330  kubectl delete pod my-dep-76767c79f-dzvz4
+  331  kubectl get pod
+  332  cleark
+  333  clear
+  334  ls
+  335  kubectl get deploy
+  336  kubectl describe deploy my-dep
+  337  clear
+  338  kubectl get pods
+  339  kubectl describe pod my-dep-76767c79f-cgxg7
+  340  clear
+  341  ls
+  342  clear
+  343  kubectl
+  344  clear
+  345  kubectl rollout
+  346  clear
+  347  kubectl get deploy
+  348  kubectl rollout history deploy/my-dep
+  349  kubectl get pod -o wide
+  350  clear
+  351  curl http://10.44.0.5
+  352  clear
+  353  ls
+  354  history
+
+
+
+ # Start a nginx pod.
+  kubectl run nginx --image=nginx
+
+
+ history     View rollout history
+  pause       Mark the provided resource as paused
+  restart     Restart a resource
+  resume      Resume a paused resource
+  status      Show the status of the rollout
+  undo        Undo a previous rollout
+
+
+kubectl rollout history deploy/my-dep    
+kubectl rollout status deploy/my-dep    
+
+  355  clear
+  356  kubectl rollout history deploy/my-dep
+  357  ls
+  358  kubectl edit deploy my-dep
+  359  kubectl rollout status deploy/my-dep
+  360  clear
+  361  kubectl rollout status deploy/my-dep
+  362  kubectl get pods
+  363  kubectl get pod -o wide
+  364  clear
+  365  curl http://10.44.0.15
+  366  kubectl rollout history deploy/my-dep
+  367  history
+
+
+  372  kubectl describe deploy my-dep
+  373  clear
+  374  kubectl edit deploy my-dep
+  375  clear
+  376  kubectl get deploy
+  377  kubectl get deploy my-dep -o yaml
+  378  clear
+  379  kubectl get deploy my-dep -o yaml --export
+  380   lear
+  381  clear
+  382  kubectl get deploy my-dep -o yaml --export >> raju.yaml
+  383  ls
+  384  more raju.yaml
+  385  clear
+  386  vi raju.yaml
+  387  clear
+  388  ls
+  389  kubectl apply -f raju.yaml
+  390  kubectl get deploy
+  391  vi raju.yaml
+  392  clear
+  393  kubectl apply -f raju.yaml
+  394  kubectl get deploy
+  395  history
+
+
+Image
+scmgalaxy/nginx-devopsschoolv1
+scmgalaxy/nginx-devopsschoolv2
+
+
+kubectl scale --replicas=20 deployment/my-raju
+
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+
+
+kubectl apply -f raju.yaml
+kubectl rollout history deploy/my-raju  
+kubectl rollout status deploy/my-raju 
+kubectl rollout undo deploy/my-raju --to-revision=1
+kubectl rollout history deploy/my-raju
+kubectl rollout status deploy/my-raju 
+
+ pause       Mark the provided resource as paused
+  restart     Restart a resource
+  resume      Resume a paused resource
+  status      Show the status of the rollout
+  undo        Undo a previous rollout
+
+
+ 395  history
+  396  clear
+  397  ls
+  398  kubectl get deploy
+  399  kubectl delete deploy my-dep\
+  400  kubectl delete deploy my-dep
+  401  clear
+  402  ls
+  403  kubectl get deploy
+  404  ls
+  405  kubectl
+  406  clear
+  407  kubectl scale -h
+  408  clear
+  409  kubectl get deploy
+  410  kubectl scale --replicas=20 deployment/my-raju
+  411  kubectl get deploy
+  412  clear
+  413  ls
+  414  clear
+  415  kubectl get deploy
+  416  clear
+  417  ls
+  418  kubectl get deploy
+  419  kubectl describe deploy my-raju
+  420  clear
+  421  ls
+  422  kubectl get deploy
+  423  vi raju.yaml
+  424  kubectl rollout history deploy/my-dep
+  425  kubectl rollout history deploy/my-raju
+  426  my-raju
+  427  kubectl rollout status deploy/my-raju
+  428  clear
+  429  ls
+  430  kubectl apply -f raju.yaml
+  431  kubectl rollout history deploy/my-raju
+  432  kubectl rollout status deploy/my-raju
+  433  clear
+  434  kubectl rollout history deploy/my-raju
+  435  kubectl rollout status deploy/my-raju
+  436  kubectl get pod -o wide
+  437  clear
+  438  curl http://10.44.0.9
+  439  kubectl get pod
+  440  clear
+  441  sl
+  442  curl http://10.44.0.
+  443  curl http://10.44.0.9
+  444  kubectl rollout undo -h
+  445  clear
+  446  kubectl rollout undo deploy/my-raju --to-revision=1
+  447  kubectl rollout history deploy/my-raju
+  448  kubectl rollout status deploy/my-raju
+  449  clear
+  450  kubectl rollout history deploy/my-raju
+  451  curl http://10.44.0.9
+  452  cler
+  453  history
+=====================================================
+What is DeamonSets?????
+
+
+
+
+
+
+
+
+
+
+
+
