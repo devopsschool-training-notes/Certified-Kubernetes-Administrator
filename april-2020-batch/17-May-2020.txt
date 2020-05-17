@@ -1,0 +1,149 @@
+IP - 13.232.232.133
+==============================
+Service
+===============================
+Types of Service
+		ClustorIP [Default]	
+		NodePort
+			NodeGetExposedTotheservice
+			ClustorIP
+		LoadBalancer	
+				ClustorIP
+				NodePort	
+=============================================
+CRUD
+
+kubectl create service clusterip my-cs --tcp=5678:80
+
+SVC
+Labels:            app=my-cs1
+Selector:          app=my-cs
+
+POD
+app=webserver2
+
+kubectl label pods hello-pod app=my-cs --overwrite
+
+kubectl create service nodeport my-ns --tcp=5678:80
+
+raju-220915669.ap-south-1.elb.amazonaws.com 
+
+$ kubectl create service loadbalancer my-lbs --tcp=5678:80
+
+devops.devopstraining.xyz
+
+kubectl expose deploy my-raju --port=80 --target-port=80 --type=NodePort
+
+ 462  kubectl get svc
+  463  clear
+  464  ls
+  465  clear
+  466  ls
+  467  kubectl get svc
+  468  kubectl create svc -h
+  469  kubectl create svc clusterip -h
+  470  clear
+  471  kubectl create service clusterip my-cs --tcp=5678:80
+  472  kubectl create svc -h
+  473  clear
+  474  kubectl get svc
+  475  kubectl describe svc my-cs
+  476  kubectl get svc
+  477  kubectl get pod
+  478  kubectl delete deploy my-raju
+  479  clear
+  480  kubectl get pod
+  481  kubectl get pod -o wide --show-lables
+  482  kubectl get pod -o wide --show-labels
+  483  clear
+  484  kubectl get pod -o wide --show-labels
+  485  kubectl get svc
+  486  curl http://10.100.224.51
+  487  kubectl describe svc my-cs
+  488  kubectl get pods -n=kube-system
+  489  clear
+  490  kubectl describe svc my-cs
+  491  kubectl edit svc my-cs
+  492  clear
+  493  kubectl describe svc my-cs
+  494  kubectl get pod -o wide --show-labels
+  495  clear
+  496  ks
+  497  clear
+  498  kubectl label
+  499  kubectl label -h
+  500  clear
+  501  kubectl get pod -o wide --show-labels
+  502  clear
+  503  kubectl label pods hello-pod app=my-cs1
+  504  kubectl label pods hello-pod app=my-cs1 --overwrite
+  505* kubectl get pod -o wide --show-label
+  506  kubectl describe svc my-cs
+  507  clear
+  508  kubectl label pods hello-pod app=my-cs --overwrite
+  509  kubectl describe svc my-cs
+  510  kubectl get svc
+  511  curl http://10.100.224.51
+  512  curl http://10.100.224.51:5678
+  513  kubectl get svc
+  514  kubectl describe svc my-cs
+  515  kubectl get svc
+  516  clear
+ 514  kubectl describe svc my-cs
+  515  kubectl get svc
+  516  clear
+  517  ls
+  518  history
+  519  clear
+  520  kubectl create svc 0-h
+  521  kubectl create svc -h
+  522  kubectl create svc nodeport -h
+  523  clear
+  524  kubectl create service nodeport my-ns --tcp=5678:80
+  525  kubectl get svc
+  526  curl http://10.110.130.125:5678
+  527  kubectl edit svc my-ns
+  528  kubeclt get svc
+  529  kubectl get svc
+  530  kubectl describe svc my-ns
+  531  clear
+  532  ls
+  533  kubectl get svc
+  534  curl http://10.110.130.125:5678
+  535  kubectl get svc
+  536  clear
+  537  kubectl get svc
+  538  kubectl describe svc my-ns
+  539  clear
+  540  coear
+  541  clear
+  542  kubectl create service -h
+  543  kubectl create service loadbalancer -h
+  544  clear
+  545  kubectl create service loadbalancer my-lbs --tcp=5678:80
+  546  kubectl get svc
+  547  kubectl edit svc my-lbs
+  548  clearks
+  549  clear
+  550  ls
+  551  more raju.yaml
+  552  clear
+  553  ls
+  554  kubectl create -f raju.yaml
+  555  kubectl get pods
+  556  clear
+  557  ls
+  558  kubectl get pods
+  559  c;ear
+  560  clear
+  561  kubectl expose -h
+  562  clear
+  563  kubectl get deploy
+  564  history | grep -i node
+  565  clear
+  566  ls
+  567  kubectl expose deploy my-raju --port=80 --target-port=80 --type=NodePort
+  568  kubectl get svc
+  569  kubectl describe svc my-raju
+  570  history
+
