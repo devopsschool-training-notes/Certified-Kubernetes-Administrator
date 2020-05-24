@@ -1,0 +1,28 @@
+Image
+scmgalaxy/nginx-devopsschoolv1
+scmgalaxy/nginx-devopsschoolv2
+
+==========================
+13.127.231.169
+
+What are the k8s volume plugins type which we discussed yest. we need demo for the same.
+- emptydir
+	- is available as long as POD is available\
+https://www.devopsschool.com/blog/kubernetes-volume-emptydir-explained-with-examples/
+
+- hostpath
+	- is available beyond a lifecycle of the pod but...Dedicated to same node - No Portability
+https://www.devopsschool.com/blog/kubernetes-volume-hostpath-explained-with-examples/
+
+- nfs
+	- Network file system but slow
+
+- configmaps
+	- Store this key-value based data in Clustor only
+https://www.devopsschool.com/blog/kubernetes-configmap-explained-using-example/
+
+- secrets
+	- Store this key-value based data in Clustor only BUT with Encoded
+https://www.devopsschool.com/tutorial/kubernetes/kubernetes-resource-objects/secrets-example-programs.html
+
+kubectl taint node ip-172-31-19-103.ap-south-1.compute.internal node-role.kubernetes.io/master:NoSchedule-
