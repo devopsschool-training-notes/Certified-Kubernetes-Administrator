@@ -1,0 +1,276 @@
+Authentication and Authoriztion in Kubernetes
+
+Authentication - Who can access to API server?
+
+- X509 Client Certs - -Client certificates	[Default] by human and kubelet
+- bearer tokens		[Default] by kubelet
+- an authenticating proxy
+- HTTP basic auth to authenticate API requests through authentication plugins
+- LDAP
+- SAML
+- Kerberos
+- alternate x509 schemes
+https://kubernetes.io/docs/reference/access-authn-authz/authentication/
+
+TYPES OF USERS
+=========================
+USER AKA HUMAN - NO API Object
+ServiceAccount - API Object
+
+How to allow other user to authenticate API server?
+----------------------------------------- 
+Step 1 - using openssl or cfssl create a private key [ USER @ Laptop] output (filename.key)
+Step 2 - Generate a CSR file using openssl or cfssl  [ USER @ Laptop] (filename.csr)
+Step 3 - filename.csr would be sent to admin of k8s.
+	Way 1 - Send to an admin via an email
+	Way 2 - Send to API server directly using certificatesigningrequests
+Step 4 - Approving filename.csr and generating auth key. [ Admin @ master]
+		- Manual 
+		- kubectl certificate aprove
+Step 5 - USER have filename.key and signed key aka employee.crt sent by admin. [ Use this in config file]
+
+
+======USER At LAPTOP==================
+kubectl create namespace office
+
+openssl genrsa -out employee.key 2048
+
+openssl req -new -key employee.key -out employee.csr -subj "/CN=employee/O=bitnami"
+
+======ADMIN AT MASTER using root==================
+openssl x509 -req -in /home/ec2-user/auth/employee.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out /home/ec2-user/auth/employee.crt -days 500
+
+======USER At LAPTOP==================
+kubectl config set-credentials employee --client-certificate=/home/ec2-user/auth/employee.crt  --client-key=/home/ec2-user/auth/employee.key
+
+kubectl config set-context employee-context --cluster=kubernetes --namespace=office --user=employee
+
+kubectl --context=employee-context get pods
+
+
+
+
+Authoriztion - One who accessed a API server? What he can do?
+https://kubernetes.io/docs/reference/access-authn-authz/authorization/
+
+The Kubernetes API server may authorize a request using one of several authorization modes:
+
+- Node 
+- ABAC - Attribute-based access control (ABAC) 
+- RBAC - Role-based access control (RBAC)
+- Webhook
+
+
+==========================================
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: office
+  name: deployment-manager
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "replicasets", "pods"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # You can also use ["*"]
+
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: deployment-manager-binding
+  namespace: office
+subjects:
+- kind: User
+  name: employee
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: deployment-manager
+  apiGroup: ""
+
+============================
+$ kubectl --context=employee-context run nginx --image=nginx
+$ kubectl --context=employee-context get pods
+
+
+
+kubectl create sa software-raj
+kubectl get sa -A | grep soft
+
+sa.yaml
+---------------
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: softag-raj-admin
+
+kubectl create -f sa.yaml
+kubectl get sa -A | grep tec
+kubectl get secrets
+
+
+kubectl help create clusterrole
+kubectl create clusterrole soft-clusterroles1 --verb=get,list,watch --resource=pods
+kubectl get clusterrole
+kubectl describe clusterrole soft-clusterroles1
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: rajesh
+  name: softwareag-role1
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "replicasets", "pods"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # You can also use ["*"]
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: default
+  name: softwareag-clusterroles2
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "replicasets", "pods"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # You can also use ["*"]
+============================================
+
+
+
+kubectl create rolebinding sg-rolebinding --role=softwareag-role1 --user=softag-raj-admin
+kubectl get rolebinding
+kubectl get rolebinding 
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tecnotree-binding3
+subjects:
+- kind: ServiceAccount
+  name: software-raj
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: soft-clusterroles1
+  apiGroup: rbac.authorization.k8s.io
+
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tecnotree-binding3
+subjects:
+- kind: User
+  name: rajesh
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: soft-clusterroles1
+  apiGroup: rbac.authorization.k8s.io
+
+===============================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tecnotree-cr-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: soft-clusterroles1
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: ServiceAccount
+  name: software-raj
+===================================================
+
+kubectl create clusterrolebinding tecnotree-cr-binding --clusterrole=tecnotree-clusterroles2 --
+
+user=tecnotree-admin
+kubectl get clusterrolebinding
+kubectl get clusterrolebinding | grep tec
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tecnotree-cr-binding3
+subjects:
+- kind: ServiceAccount
+  name: tecnotree-admin
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: tecnotree-clusterroles2
+  apiGroup: rbac.authorization.k8s.io
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tecnotree-cr-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tecnotree-clusterroles2
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: tecnotree-admin
+
+
+kubectl create clusterrolebinding myapp-view-binding --clusterrole=soft-clusterroles1 --serviceaccount=office:software-raj
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  creationTimestamp: "2020-05-31T16:13:44Z"
+  managedFields:
+  - apiVersion: rbac.authorization.k8s.io/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:roleRef:
+        f:apiGroup: {}
+        f:kind: {}
+        f:name: {}
+      f:subjects: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-31T16:13:44Z"
+  name: myapp-view-binding
+  resourceVersion: "114768"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/myapp-view-binding
+  uid: 30d90c5b-8030-47f4-92d3-bf51fc10abbc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: soft-clusterroles1
+subjects:
+- kind: ServiceAccount
+  name: software-raj
+  namespace: office
+
+
+
+=========================
+kubectl convert -f pod.yaml
+kubectl convert -f pod.yaml --local -o json
+kubectl convert -f . | kubectl create -f -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kubernetes Node Maintaince and clustor mgmt.
