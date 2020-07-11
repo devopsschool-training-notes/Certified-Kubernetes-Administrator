@@ -1,0 +1,276 @@
+Cluster Management Commands:
+  certificate   Modify certificate resources.
+  cluster-info  Display cluster info
+  top           Display Resource (CPU/Memory/Storage) usage.
+  cordon        Mark node as unschedulable
+  uncordon      Mark node as schedulable
+  drain         Drain node in preparation for maintenance
+  taint         Update the taints on one or more nodes
+
+  - Backup and Restore 
+  - multi Schdular
+  - Netowork Policy
+  - Kubeadm - 20 mins
+  - 
+========================================================================
+certificate
+=====================
+Approve a certificate signing request.
+
+ kubectl certificate approve allows a cluster admin to approve a certificate signing request (CSR). This action tells a
+certificate signing controller to issue a certificate to the requestor with the attributes requested in the CSR.
+
+
+How to add user's access to kubernetes?
+=======================================
+S1 - create pvt and pub key  - USER@WORKSTATION
+S2 - Generate CSR file - USER@WORKSTATION
+S3 - Approving CSR - Admin@MASTER
+  approve     Approve a certificate signing request
+  deny        Deny a certificate signing request
+
+kubectl certificate approve -f csrfilename
+kubectl certificate deny -f csrfilename
+
+============================
+top 
+============================
+The top command allows you to see the resource consumption for nodes or pods.
+This command requires Metrics Server to be correctly configured and working on the server.
+
+Available Commands:
+  node        Display Resource (CPU/Memory/Storage) usage of nodes
+  pod         Display Resource (CPU/Memory/Storage) usage of pods
+
+kubectl top node
+Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
+
+kubectl top pod
+Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
+=================================
+Kubernetes Monitoring
+=========================
+Container -> cadvisor
+https://hub.docker.com/r/google/cadvisor/
+https://github.com/google/cadvisor
+
+Pod -> heapster
+		For basic CPU/memory HPA metrics: Use metrics-server.
+		For general monitoring - Prometheus Operator
+		For event transfer: heptiolabs/eventrouter 
+Nodes - Prometheus
+Services - ServiceMesh
+	Services mesh Data planes	Envoy
+	Services mesh Control Planes	Istio		
+Logs - ElasticSearch
+Performance - NewRelic 
+Security - Twistkock and Notary
+
+How to install heapster?
+git clone https://github.com/kubernetes/heapster.git
+kubectl apply -f .
+https://elatov.github.io/2018/06/installing-heapster-for-kubernetes/
+
+How to install metrics-server? 
+git clone https://github.com/kodekloudhub/kubernetes-metrics-server.git
+kubectl create -f kubernetes-metrics-server/
+kubectl top nodes
+kubectl top pods
+kubectl get pods --all-namespaces | grep -i metrics-server
+kube-system     metrics-server-5b7698966-8x5tj   
+
+=============================================================
+
+------ DO WITH NODE
+  cordon        Mark node as unschedulable
+  uncordon      Mark node as schedulable
+  drain         Drain node in preparation for maintenance
+  taint         Update the taints on one or more nodes
+
+------ DO WITH POD.spec
+  nodeselector
+  nodeaffinity
+  pod affinity
+  tolerations
+
+==========================================================
+Taint
+https://www.devopsschool.com/blog/deep-dive-into-kubernetes-taint-with-node/
+$ kubectl get nodes
+# Master 
+$ kubectl describe node ip-172-31-23-196.ap-south-1.compute.internal
+
+Taints:             node-role.kubernetes.io/master:NoSchedule
+Unschedulable:      false
+
+# Worker
+$ kubectl describe node ip-172-31-26-2.ap-south-1.compute.internal
+Taints:             <none>
+Unschedulable:      false
+
+kubectl get nodes
+kubectl cordon -h
+kubectl cordon ip-172-31-26-2.ap-south-1.compute.internal
+kubectl describe node ip-172-31-26-2.ap-south-1.compute.internal
+
+Taints:             node.kubernetes.io/unschedulable:NoSchedule
+Unschedulable:      true
+
+kubectl get nodes
+kubectl uncordon ip-172-31-26-2.ap-south-1.compute.internal
+kubectl describe node ip-172-31-26-2.ap-south-1.compute.internal
+Taints:             <none>
+Unschedulable:      false
+kubectl get pods
+
+kubectl get nodes
+## You add a taint to a node using kubectl taint
+# kubectl taint nodes node1 server=web:NoSchedule
+## To remove the taint added by the command above, you can run:
+# kubectl taint nodes node1 key:NoSchedule-
+$ kubectl taint nodes node1 dedicated:NoSchedule-
+$ kubectl taint nodes ip-172-31-24-84.ap-south-1.compute.internal node-role.kubernetes.io/master:NoSchedule-
+
+$ kubectl describe node ip-172-31-26-2.ap-south-1.compute.internal
+Taints:             <none>
+Unschedulable:      false
+
+$ kubectl taint nodes ip-172-31-26-2.ap-south-1.compute.internal server=web:NoSchedule
+$ kubectl describe node ip-172-31-26-2.ap-south-1.compute.internal
+Taints:             server=web:NoSchedule
+Unschedulable:      false
+kubectl get pods
+
+$ kubectl taint nodes ip-172-31-26-2.ap-south-1.compute.internal server=web:NoSchedule-
+$ kubectl describe node ip-172-31-26-2.ap-south-1.compute.internal
+Taints:             <none>
+Unschedulable:      false
+kubectl get pods
+
+==========================
+$ kubectl taint nodes ip-172-31-26-2.ap-south-1.compute.internal server=web:NoSchedule
+$ kubectl describe node ip-172-31-26-2.ap-south-1.compute.internal
+Taints:             server=web:NoSchedule
+Unschedulable:      false
+
+
+
+====================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  tolerations:
+  - key: "server"
+    operator: "Equal"
+    value: "web"
+    effect: "NoSchedule"
+
+
+Taint and tolerations
+https://www.devopsschool.com/blog/understanding-kubernetess-taints-and-tolerations-in-easy-way/
+
+
+  nodeselector
+  nodeaffinity
+  pod affinity
+==========================================
+with pod.spec
+================================
+https://www.devopsschool.com/blog/understanding-node-selector-and-node-affinity-in-kubernetes/
+
+Pod would select NODE - Based on Node Key and Value
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    disktype: ssd
+...
+
+nodeaffinity
+ - Pod would select NODE - Based on the expression
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd
+  labels:
+    nginx: yes
+  annotations:
+    scheduler.alpha.kubernetes.io/affinity: >
+      {
+        "nodeAffinity": {
+          "preferredDuringSchedulingIgnoredDuringExecution": [
+            {
+              "labelSelector": {
+                "matchExpressions": [
+                  {
+                    "key": "y-web",
+                    "operator": "In",
+                    "values": ["yes", "true"]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+spec:
+  containers:
+  - name: httpd
+    image: httpd
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/e2e-az-name
+            operator: In
+            values:
+            - e2e-az1
+            - e2e-az2
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: another-node-label-key
+            operator: In
+            values:
+            - another-node-label-value
+  containers:
+  - name: with-node-affinity
+    image: k8s.gcr.io/pause:2.0
+
+pod affinity
+========================
+this pod would create in a Node which has POD label matching with a POD.
+
+https://www.devopsschool.com/blog/deep-dive-into-kubernetes-taint-with-node/
+https://www.devopsschool.com/blog/understanding-kubernetess-taints-and-tolerations-in-easy-way/
+https://www.devopsschool.com/blog/understanding-node-selector-and-node-affinity-in-kubernetes/
